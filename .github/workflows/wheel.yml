@@ -7,6 +7,8 @@ jobs:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ubuntu-latest
 
+
+
     env:
       CIBW_BUILD_VERBOSITY: 1
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
@@ -17,6 +19,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: add additional package
+        uses: sudo apt-get install patchelf
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
