@@ -10,7 +10,7 @@ jobs:
     env:
       CIBW_BUILD_VERBOSITY: 1
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
-      CIBW_BEFORE_BUILD: "pip3 install maturin>=0.10,<0.11"
+      CIBW_BEFORE_BUILD: "pip3 install 'maturin>=0.10,<0.11'"
       CIBW_ARCHS_LINUX: "auto64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
       CIBW_BUILD: "*-musllinux_x86_64"
@@ -36,7 +36,7 @@ jobs:
     env:
       CIBW_BUILD_VERBOSITY: 1
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
-      CIBW_BEFORE_BUILD: "pip3 install maturin>=0.10,<0.11"
+      CIBW_BEFORE_BUILD: "pip3 install 'maturin>=0.10,<0.11'"
       CIBW_ARCHS_LINUX: "aarch64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
       CIBW_BUILD: "*-musllinux_aarch64"
