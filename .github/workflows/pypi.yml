@@ -132,7 +132,7 @@ jobs:
           name: wheels
           path: dist
 
-  build_muslwheels_x86_64:
+  muslwheels_x86_64:
     name: Build wheels on x86_64
     runs-on: ubuntu-latest
 
@@ -156,38 +156,37 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          path: ./wheelhouse/*.whl
+          name: wheels
+          path: dist
 
-    build_muslwheels_aarch64:
-      name: Build wheels on aarch64
-      runs-on: ubuntu-latest
+  build_wheels_aarch64:
+    name: Build wheels on aarch64
+    runs-on: ubuntu-latest
 
-      env:
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
-        CIBW_BEFORE_BUILD: "pip3 install 'maturin>=0.10,<0.11'"
-        CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
-        CIBW_BUILD: "*-musllinux_aarch64"
-        CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
+    env:
+      CIBW_BUILD_VERBOSITY: 1
+      CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+      CIBW_BEFORE_BUILD: "pip3 install 'maturin>=0.10,<0.11'"
+      CIBW_ARCHS_LINUX: "aarch64"
+      CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+      CIBW_BUILD: "*-musllinux_aarch64"
+      CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
 
-      steps:
-        - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-        - name: add additional package
-          run: sudo apt-get install patchelf
+      - name: add additional package
+        run: sudo apt-get install patchelf
 
-        - name: Set up QEMU
-          uses: docker/setup-qemu-action@v2
-          with:
-            platforms: all
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
 
-        - name: Build wheels
-          uses: pypa/cibuildwheel@v2.9.0
-          with:
-            output-dir: dist/wheels
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.9.0
 
-        - uses: actions/upload-artifact@v3
-          with:
-            name: wheels
-            path: dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
