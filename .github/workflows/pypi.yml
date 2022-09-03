@@ -1,8 +1,6 @@
 name: Deploy to PyPI
 
-on:
-  release:
-    types: [ created ]
+on: [push, pull_request]
 
 jobs:
   macos:
@@ -134,22 +132,62 @@ jobs:
           name: wheels
           path: dist
 
-  release:
-    name: Release
+  build muslwheels x86_64:
+    name: Build wheels on x86_64
     runs-on: ubuntu-latest
-    if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [ macos, windows, linux ]
+
+    env:
+      CIBW_BUILD_VERBOSITY: 1
+      CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+      CIBW_BEFORE_BUILD: "pip3 install 'maturin>=0.10,<0.11'"
+      CIBW_ARCHS_LINUX: "auto64"
+      CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+      CIBW_BUILD: "*-musllinux_x86_64"
+      CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
+
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v3
+
+      - name: add additional package
+        run: sudo apt-get install patchelf
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.9.0
+
+      - uses: actions/upload-artifact@v3
         with:
-          name: wheels
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - name: Publish to PyPi
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          pip install --upgrade twine
-          twine upload --skip-existing *
+          path: ./wheelhouse/*.whl
+
+    build muslwheels aarch64:
+      name: Build wheels on aarch64
+      runs-on: ubuntu-latest
+
+      env:
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+        CIBW_BEFORE_BUILD: "pip3 install 'maturin>=0.10,<0.11'"
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+        CIBW_BUILD: "*-musllinux_aarch64"
+        CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
+
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: add additional package
+          run: sudo apt-get install patchelf
+
+        - name: Set up QEMU
+          uses: docker/setup-qemu-action@v2
+          with:
+            platforms: all
+
+        - name: Build wheels
+          uses: pypa/cibuildwheel@v2.9.0
+          with:
+            output-dir: dist/wheels
+
+        - uses: actions/upload-artifact@v3
+          with:
+            name: wheels
+            path: dist
