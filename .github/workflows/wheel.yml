@@ -36,7 +36,8 @@ jobs:
     env:
       CIBW_BUILD_VERBOSITY: 1
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
-      CIBW_BEFORE_BUILD: "pip3 install 'maturin>=0.10,<0.11'"
+      CIBW_BEFORE_BUILD: "wget https://files.pythonhosted.org/packages/3f/fe/23b1ba4c088cea9f36a5df7c04845fbc06e9e2c1fa9d58e39cd3a6594902/maturin-0.10.6-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl &&
+      pip install maturin-0.10.6-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl"
       CIBW_ARCHS_LINUX: "aarch64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
       CIBW_BUILD: "*-musllinux_aarch64"
@@ -61,4 +62,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          path: ./wheelhouse/*.whl
+          name: wheels
+          path: dist
