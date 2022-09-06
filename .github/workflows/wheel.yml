@@ -29,18 +29,16 @@ jobs:
         with:
           path: ./wheelhouse/*.whl
 
-  build_wheels_aarch64:
-    name: Build wheels on aarch64
+  build_wheels_python38:
+    name: Build wheels on aarch64 for python3.8
     runs-on: ubuntu-latest
 
     env:
       CIBW_BUILD_VERBOSITY: 1
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
-      CIBW_BEFORE_BUILD: "wget https://files.pythonhosted.org/packages/3f/fe/23b1ba4c088cea9f36a5df7c04845fbc06e9e2c1fa9d58e39cd3a6594902/maturin-0.10.6-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl &&
-      pip install maturin-0.10.6-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl"
       CIBW_ARCHS_LINUX: "aarch64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
-      CIBW_BUILD: "*-musllinux_aarch64"
+      CIBW_BUILD: "cp38-musllinux_aarch64"
       CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
 
     steps:
@@ -52,7 +50,109 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: all
+          platforms: arm64
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.9.0
+        with:
+          output-dir: dist
+
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+
+  build_wheels_python39:
+    name: Build wheels on aarch64 for python3.9
+    runs-on: ubuntu-latest
+
+    env:
+      CIBW_BUILD_VERBOSITY: 1
+      CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+      CIBW_ARCHS_LINUX: "aarch64"
+      CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+      CIBW_BUILD: "cp39-musllinux_aarch64"
+      CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: add additional package
+        run: sudo apt-get install patchelf
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.9.0
+        with:
+          output-dir: dist
+
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+
+  build_wheels_python310:
+    name: Build wheels on aarch64 for python3.10
+    runs-on: ubuntu-latest
+
+    env:
+      CIBW_BUILD_VERBOSITY: 1
+      CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+      CIBW_ARCHS_LINUX: "aarch64"
+      CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+      CIBW_BUILD: "cp310-musllinux_aarch64"
+      CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: add additional package
+        run: sudo apt-get install patchelf
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.9.0
+        with:
+          output-dir: dist
+
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+
+  build_wheels_python311:
+    name: Build wheels on aarch64 for python3.11
+    runs-on: ubuntu-latest
+
+    env:
+      CIBW_BUILD_VERBOSITY: 1
+      CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+      CIBW_ARCHS_LINUX: "aarch64"
+      CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+      CIBW_BUILD: "cp311-musllinux_aarch64"
+      CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-* cp37-*"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: add additional package
+        run: sudo apt-get install patchelf
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.9.0
