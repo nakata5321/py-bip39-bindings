@@ -24,10 +24,13 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.9.0
+        with:
+          output-dir: dist
 
       - uses: actions/upload-artifact@v3
         with:
-          path: ./wheelhouse/*.whl
+          name: wheels
+          path: dist
 
   build_wheels_python38:
     name: Build wheels on aarch64 for python3.8
