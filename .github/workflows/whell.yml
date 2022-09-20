@@ -161,6 +161,74 @@ jobs:
           name: wheels
           path: dist
 
+  build_wheels_python36:
+    name: Build wheels on aarch64 for python3.6
+    runs-on: ubuntu-latest
+
+    env:
+      CIBW_BUILD_VERBOSITY: 1
+      CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+      CIBW_ARCHS_LINUX: "aarch64"
+      CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+      CIBW_BUILD: "cp36-musllinux_aarch64 cp36-manylinux_aarch64"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: add additional package
+        run: sudo apt-get install patchelf
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.9.0
+        with:
+          output-dir: dist
+
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+
+
+  build_wheels_python37:
+    name: Build wheels on aarch64 for python3.7
+    runs-on: ubuntu-latest
+
+    env:
+      CIBW_BUILD_VERBOSITY: 1
+      CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
+      CIBW_ARCHS_LINUX: "aarch64"
+      CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
+      CIBW_BUILD: "cp37-musllinux_aarch64 cp37-manylinux_aarch64"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: add additional package
+        run: sudo apt-get install patchelf
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.9.0
+        with:
+          output-dir: dist
+
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+
+
   build_wheels_python38:
     name: Build wheels on aarch64 for python3.8
     runs-on: ubuntu-latest
@@ -170,8 +238,7 @@ jobs:
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
       CIBW_ARCHS_LINUX: "aarch64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
-      CIBW_BUILD: "cp38-musllinux_aarch64 *-manylinux_aarch64"
-      CIBW_SKIP: "cp27-* cp34-* cp35-* cp36-*"
+      CIBW_BUILD: "cp38-musllinux_aarch64 cp38-manylinux_aarch64"
 
     steps:
       - uses: actions/checkout@v3
@@ -204,8 +271,7 @@ jobs:
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
       CIBW_ARCHS_LINUX: "aarch64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
-      CIBW_BUILD: "cp39-musllinux_aarch64 *-manylinux_aarch64"
-      CIBW_SKIP: "cp27-* cp34-* cp35-*"
+      CIBW_BUILD: "cp39-musllinux_aarch64 cp39-manylinux_aarch64"
 
     steps:
       - uses: actions/checkout@v3
@@ -238,8 +304,7 @@ jobs:
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
       CIBW_ARCHS_LINUX: "aarch64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
-      CIBW_BUILD: "cp310-musllinux_aarch64 *-manylinux_aarch64"
-      CIBW_SKIP: "cp27-* cp34-* cp35-*"
+      CIBW_BUILD: "cp310-musllinux_aarch64 cp310-manylinux_aarch64"
 
     steps:
       - uses: actions/checkout@v3
@@ -272,8 +337,7 @@ jobs:
       CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
       CIBW_ARCHS_LINUX: "aarch64"
       CIBW_ENVIRONMENT: 'PATH="$PATH:$HOME/.cargo/bin"'
-      CIBW_BUILD: "cp311-musllinux_aarch64 *-manylinux_aarch64"
-      CIBW_SKIP: "cp27-* cp34-* cp35-*"
+      CIBW_BUILD: "cp311-musllinux_aarch64 cp311-manylinux_aarch64"
 
     steps:
       - uses: actions/checkout@v3
